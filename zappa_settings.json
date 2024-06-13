@@ -4,7 +4,7 @@
     "app_function": "app.app",  // La función de tu aplicación Flask
     "aws_region": "us-east-1",  // Región de AWS donde desplegarás tu función Lambda
     "runtime": "python3.9",  // Versión de Python que estás utilizando
-    "project_name": "mi-proyecto-flask",  // Nombre de tu proyecto
+    "project_name": "mi-proyecto-flask-2",  // Nombre de tu proyecto
     "exclude": ["*.env"],  // Archivos a excluir del despliegue
     "keep_warm": false  // Desactiva el mantenimiento del estado caliente (opcional)
   }
