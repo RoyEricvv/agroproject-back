@@ -1,0 +1,35 @@
+version: '3.3'
+services:
+  project:
+    restart: always
+    build: .
+    command: ['bash']
+    volumes:
+      - .:/var/task
+      - ~/.aws/:/root/.aws
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    environment:
+      - FLASK_ENV=development
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=password
+      - MYSQL_DB=mydatabase
+
+  db:
+    image: mysql:8.0
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_USER: 'user'  # Usuario de MySQL
+      MYSQL_DATABASE: 'aplication'
+    volumes:
+      - mysql-db:/var/lib/mysql
+
+volumes:
+  mysql-db:

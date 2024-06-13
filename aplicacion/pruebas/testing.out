@@ -1,0 +1,11 @@
+test_construir_lista_objetivo (__main__.TestFormularRaciones) ... ok
+test_construir_lista_restriccion (__main__.TestFormularRaciones) ... ok
+test_construir_matriz_ecuaciones (__main__.TestFormularRaciones) ... ok
+test_disminuir_inventario (__main__.TestFormularRaciones) ... ok
+test_verificar_inventario_final_escaso (__main__.TestFormularRaciones) ... ok
+test_verificar_inventario_final_no_escaso (__main__.TestFormularRaciones) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.001s
+
+OK
