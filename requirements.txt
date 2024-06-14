@@ -92,3 +92,4 @@ marshmallow_sqlalchemy
 scipy
 pywinpty==0.5.7
 # pywin32
+Flask-Migrate

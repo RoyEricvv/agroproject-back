@@ -10,9 +10,9 @@ from marshmallow import ValidationError
 @app.route('/equipos/<granja_id>/allGranja', methods=['GET'])
 def equipo_listar_todos_granja(granja_id):
     if granja_id == '0':
-        equipos = Equipo.query.filter(Equipo.activo == True).order_by(Equipo.nombre).all()
+        equipos = Equipo.query.filter(Equipo.estado_equipo == True).order_by(Equipo.nombre).all()
     else:
-        equipos = Equipo.query.filter_by(granja_id=granja_id, activo=True).order_by(Equipo.id).all()
+        equipos = Equipo.query.filter_by(granja_id=granja_id, estado_equipo=True).order_by(Equipo.id).all()
     
     if equipos:
         equipos_schema = EquipoSchema(many=True)
@@ -25,12 +25,13 @@ def equipo_listar_todos_granja(granja_id):
 @app.route('/equipos/<usuario_id>/<tipo>/all', methods=['GET'])
 def equipo_listar_todos_usuario(usuario_id, tipo):
     if usuario_id == '0':
-        equipos = Equipo.query.filter(Equipo.activo == True).order_by(Equipo.id).all()
+        equipos = Equipo.query.filter(Equipo.estado_equipo == True).order_by(Equipo.id).all()
     else:
+        print("vuamos")
         if tipo == '1':  # Listar equipos no contabilizados
-            equipos = Equipo.query.join(Granja).filter(Granja.usuario_id == usuario_id, Equipo.activo == True, Equipo.estado_equipo != 3).order_by(Equipo.id).all()
+            equipos = Equipo.query.join(Granja).filter(Granja.usuario_id == usuario_id, Equipo.estado_equipo == True, Equipo.estado_equipo != 3).order_by(Equipo.id).all()
         else:
-            equipos = Equipo.query.join(Granja).filter(Granja.usuario_id == usuario_id, Equipo.activo == True).order_by(Equipo.id).all()
+            equipos = Equipo.query.join(Granja).filter(Granja.usuario_id == usuario_id, Equipo.estado_equipo == True).order_by(Equipo.id).all()
     
     if equipos:
         equipos_schema = EquipoSchema(many=True)
@@ -66,7 +67,7 @@ def equipo_listar_todos_usuario(usuario_id, tipo):
 #Obtener un equipo por su ID
 @app.route('/equipos/<equipo_id>', methods=['GET'])
 def equipo_obtener_por_id(equipo_id):
-    equipo = Equipo.query.filter_by(id=equipo_id, activo=True).one_or_none()
+    equipo = Equipo.query.filter_by(id=equipo_id, estado_equipo=True).one_or_none()
 
     if equipo:
         equipo_schema = EquipoSchema()
@@ -115,7 +116,7 @@ def equipo_crear():
 # Actualizar un equipo por su ID
 @app.route('/equipos/<equipo_id>', methods=['PUT'])
 def equipo_actualizar(equipo_id):
-    equipo = Equipo.query.filter_by(id=equipo_id, activo=True).one_or_none()
+    equipo = Equipo.query.filter_by(id=equipo_id, estado_equipo=True).one_or_none()
 
     if not equipo:
         return {"Mensaje": "Equipo no encontrado"}, 404
@@ -151,12 +152,12 @@ def equipo_actualizar(equipo_id):
 # Eliminar un equipo por su ID
 @app.route('/equipos/<equipo_id>', methods=['DELETE'])
 def equipo_eliminar(equipo_id):
-    equipo = Equipo.query.filter_by(id=equipo_id, activo=True).one_or_none()
+    equipo = Equipo.query.filter_by(id=equipo_id, estado_equipo=True).one_or_none()
 
     if not equipo:
         return {"Mensaje": "Equipo no encontrado"}, 404
     
-    equipo.activo = False
+    equipo.estado_equipo = False
     db.session.merge(equipo)
     db.session.commit()
     

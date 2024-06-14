@@ -43,3 +43,10 @@ The Backend help users manangement a livestock farm
 
 * Repo owner or admin
 * Other community or team contact
+
+
+### change your BD
+
+* flask db init
+*  flask db migrate -m "Add nueva_columna to Equipo"
+*       flask db upgrade
