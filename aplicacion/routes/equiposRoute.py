@@ -2,7 +2,8 @@ from flask import request, make_response, abort
 from datetime import datetime as dt
 from flask import current_app as app
 from aplicacion import db
-from aplicacion.modelo.Equipo import Equipo, Granja, EquipoSchema
+from aplicacion.modelo.Equipo import Equipo, EquipoSchema
+from aplicacion.modelo.Granja import Granja
 from marshmallow import ValidationError
 
 
@@ -27,10 +28,14 @@ def equipo_listar_todos_usuario(usuario_id, tipo):
     if usuario_id == '0':
         equipos = Equipo.query.filter(Equipo.estado_equipo == True).order_by(Equipo.id).all()
     else:
-        print("vuamos")
         if tipo == '1':  # Listar equipos no contabilizados
             equipos = Equipo.query.join(Granja).filter(Granja.usuario_id == usuario_id, Equipo.estado_equipo == True, Equipo.estado_equipo != 3).order_by(Equipo.id).all()
         else:
+            # id_granja = Granja.query.filter(usuario_id = usuario_id)
+            # if id_granja:
+            #     equipos = Equipo.query.filter(granja_id = id_granja, estado_equipo =True)
+            # else:
+            #     print(f"No se encontró ninguna Granja para el usuario con ID {usuario_id}.")
             equipos = Equipo.query.join(Granja).filter(Granja.usuario_id == usuario_id, Equipo.estado_equipo == True).order_by(Equipo.id).all()
     
     if equipos:
@@ -40,30 +45,7 @@ def equipo_listar_todos_usuario(usuario_id, tipo):
     else:
         return {"Mensaje": "No se encontraron equipos para el usuario especificado", "usuarioId": usuario_id}, 404
 
-    
 
-# #Servicio para listar todos los animales de un usuario
-# @app.route('/animales/<usuario_id>/<tipo>/allAnimales', methods=['GET'])
-# def animal_listar_todos_usuario(usuario_id,tipo):
-#     if usuario_id == '0':
-#         #Se crea la lista de todos los animales.
-#         animales = Animal.query.filter(Animal.activo==True).order_by(Animal.id).all()
-#     else:
-#         #Se crea la lista de los animales de una granja.
-#         if tipo == 1: #Listar animales no contabilizados
-#             animales = Animal.query.join(Granja).filter(Granja.usuario_id == usuario_id).filter(Animal.activo==True).filter(Animal.estado_animal!=3).order_by(Animal.id).all()
-#         else:
-#             animales = Animal.query.join(Granja).filter(Granja.usuario_id == usuario_id).filter(Animal.activo==True).order_by(Animal.id).all()
-#         print(animales)
-#     if len(animales) > 0:
-#         #Se serializa la información a retornar
-#         animales_schema = AnimalSchema(many=True)
-#         data = animales_schema.dump(animales)
-    
-#         return {"Mensaje": "Lista de animales", "animales": data}
-#     else:
-#         return {"Mensaje": "No se encontró animales", "usuarioId": usuario_id},404
-    
 #Obtener un equipo por su ID
 @app.route('/equipos/<equipo_id>', methods=['GET'])
 def equipo_obtener_por_id(equipo_id):

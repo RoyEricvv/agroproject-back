@@ -15,7 +15,7 @@ class Equipo(db.Model):
     granja_id = db.Column(
         db.Integer,
         db.ForeignKey('Granja.id', name='fk_equipo_granja_id'),
-        primary_key=True
+        nullable=False
     )
     estado_equipo = db.Column(
         db.Integer
