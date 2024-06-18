@@ -16,12 +16,12 @@ class Sanitario(db.Model):
     granja_id = db.Column(
         db.Integer,
         db.ForeignKey('Granja.id'),
-        primary_key=True
+        nullable=False
     )
     especie_id = db.Column(
         db.Integer,
         db.ForeignKey('Especie.id'),
-        primary_key=True
+        nullable=False
     )
     #1:
     rubro = db.Column(
@@ -51,7 +51,9 @@ class Sanitario(db.Model):
     observaciones = db.Column(
         db.String(255)
     )  # Campo observaciones
-
+    saldo = db.Column(
+        db.Double
+    )
     activo = db.Column(
         db.Boolean,
         default=True
@@ -72,4 +74,21 @@ class SanitarioSchema(ma.SQLAlchemyAutoSchema):
     granja = fields.Nested('GranjaSchema')
     especie = fields.Nested('EspecieSchema')
 
+
+class SimpleSanitarioSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Sanitario
+        include_fk = True
+        sqla_session = db.session
+
+    # Relación con vacunas (Sanitario)
+    # vacunas = fields.List(fields.Nested(SanitarioSchema), required=True)
+    # # Relación con animales
+    # animales = fields.List(fields.Integer(), required=True)
+
+class RubroSanitarioSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Sanitario
+        include_fk = True
+        fields = ('rubro',)
 
