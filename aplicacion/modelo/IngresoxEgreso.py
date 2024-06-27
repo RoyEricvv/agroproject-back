@@ -1,6 +1,6 @@
 from datetime import datetime
 from aplicacion import db, ma, fields
-from aplicacion.modelo import Animal, Equipo, Sanitario, Granja
+from aplicacion.modelo import Animal, Equipo, Sanitario, Granja, Insumo
 
 
 # Tabla intermedia para la relación muchos a muchos entre IngresoxEgreso y Animal
@@ -27,6 +27,14 @@ ingreso_vacuna = db.Table('ingreso_vacuna',
     db.Column('precio_unitario', db.Float),
     db.Column('cantidad', db.Integer)
 )
+
+# Tabla intermedia para la relación muchos a muchos entre IngresoxEgreso y Inventario
+ingreso_insumo = db.Table('ingreso_insumo',
+    db.Column('ingreso_id', db.Integer, db.ForeignKey('IngresoxEgreso.id', name='fk_ingreso_insumo_ingreso_id'), primary_key=True),
+    db.Column('insumo_id', db.Integer, db.ForeignKey('Insumo.id', name='fk_ingreso_insumo_insumo_id'), primary_key=True),
+    db.Column('precio_unitario', db.Float),
+    db.Column('cantidad', db.Integer)
+)
     
 class IngresoxEgreso(db.Model):
     __tablename__ = 'IngresoxEgreso'
@@ -45,12 +53,17 @@ class IngresoxEgreso(db.Model):
     comentario = db.Column(db.Text, nullable=True)
     total = db.Column(db.Float, nullable=False)
     url_boleta = db.Column(db.String(255), nullable=True)
+    total = db.Column(db.Double)
+    activo = db.Column(db.Boolean, default=True)
+
 
     # Relaciones muchos a muchos con tablas intermedias
     animales = db.relationship('Animal', secondary=ingreso_animal, backref=db.backref('ingresos', lazy='dynamic'))
-    # equipos = db.relationship('Equipo', secondary=ingreso_equipo, backref=db.backref('ingresos', lazy='dynamic'))
+    equipos = db.relationship('Equipo', secondary=ingreso_equipo, backref=db.backref('ingresos', lazy='dynamic'))
     vacunas = db.relationship('Sanitario', secondary=ingreso_vacuna, backref=db.backref('ingresos', lazy='dynamic'))
     granja = db.relationship('Granja', backref=db.backref('ingresosxegreso', lazy=True))
+    insumos = db.relationship('Insumo', secondary=ingreso_insumo, backref=db.backref('ingresos', lazy='dynamic'))
+
 
     def __repr__(self):
         return f'<IngresoxEgreso {self.id}>'

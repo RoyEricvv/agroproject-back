@@ -15,6 +15,7 @@ consumo_animal = db.Table('consumo_animal',
     db.Column('animal_id', db.Integer, db.ForeignKey('Animal.id'), primary_key=True)
 )
 
+
 class ConsumoSanitario(db.Model):
     """Modelo de Data para Animal"""
 
@@ -43,6 +44,8 @@ class ConsumoSanitario(db.Model):
     observaciones = db.Column(
         db.String(255)
     )
+    activo = db.Column(db.Boolean, default=True)
+
     # Relación con la tabla Granja
     granja = db.relationship('Granja', backref=db.backref('consumos_sanitarios', lazy=True))
      # Relación con la tabla Sanitario (vacuna) y número de dosis
@@ -51,8 +54,57 @@ class ConsumoSanitario(db.Model):
     # Relación con la tabla Animal (muchos a muchos)
     animales = db.relationship('Animal', secondary=consumo_animal, backref=db.backref('consumos_sanitarios', lazy='dynamic'))
 
+
     def __repr__(self):
         return '<ConsumoSanitario {}>'.format(self.nombre)
+
+
+
+
+
+class ConsumoVacunaSchema(ma.Schema):
+    vacuna_id = fields.Int()
+    numero_dosis = fields.Int()
+    vacunas = fields.Nested('SimpleSanitarioSchema', many=True)
+
+class IntermediateConsumoSanitarioSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = ConsumoSanitario
+        include_fk = True
+
+    consumo_vacunas = fields.Method("get_vacunas")
+    animales = fields.List(fields.Nested('SimpleAnimalSchema'))
+    granja = fields.Nested('GranjaSchema')
+
+    def get_vacunas(self, obj):
+        # results = db.session.query(consumo_vacuna, Sanitario) \
+        #             .outerjoin(Sanitario, Sanitario.id == consumo_vacuna.c.vacuna_id) \
+        #             .filter(consumo_vacuna.c.consumo_id == obj.id) \
+        #             .all()
+        # results = Sanitario.query.join(consumo_vacuna).filter(consumo_vacuna.consumo_id == obj.id).all()
+        # results = db.session.query(consumo_vacuna).join(Sanitario, Sanitario.id == consumo_vacuna.vacuna_id)
+
+        results = db.session.query(consumo_vacuna) \
+                    .filter(consumo_vacuna.c.consumo_id == obj.id) \
+                    .all()
+
+        return [ConsumoVacunaSchema().dump({
+            'vacuna_id': r.vacuna_id,
+            'numero_dosis': r.numero_dosis,
+        }) for r in results]
+    
+    # class Meta:
+    #     model = ConsumoSanitario
+    #     include_fk = True
+    #     include_relationships = True
+    #     load_instance = True
+    #     sqla_session = db.session
+
+    # # Incluir las relaciones con vacunas y animales usando los esquemas de las tablas intermedias
+    # # vacunas = fields.Nested(ConsumoVacunaSchema, many=True)
+    # # vacunas = fields.List(fields.Nested('ConsumoVacunaSchema'))
+    # consumo_vacuna = fields.List(fields.Nested(ConsumoVacunaSchema))
+    # # animales = fields.List(fields.Nested('SimpleAnimalSchema'))
 
 
 class SimpleConsumoSanitarioSchema(ma.SQLAlchemyAutoSchema):
@@ -60,7 +112,10 @@ class SimpleConsumoSanitarioSchema(ma.SQLAlchemyAutoSchema):
         model = ConsumoSanitario
         include_fk = True
         sqla_session = db.session
-
+    granja = fields.Nested('GranjaSchema')
+    vacunas = fields.List(fields.Nested(SimpleSanitarioSchema))
+    animales = fields.List(fields.Nested('SimpleAnimalSchema'))
+    # vacunas = fields.Nested('SimpleSanitarioSchema')
 
 class ConsumoSanitarioSchema(ma.SQLAlchemyAutoSchema):
     class Meta:

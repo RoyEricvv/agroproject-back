@@ -1,6 +1,6 @@
 from datetime import datetime
 from aplicacion import db, ma, fields
-from aplicacion.modelo import Granja, Especie
+from aplicacion.modelo import Granja, Especie, Rubro
 
 #GranjaXEspecie
 
@@ -23,10 +23,12 @@ class Sanitario(db.Model):
         db.ForeignKey('Especie.id'),
         nullable=False
     )
-    #1:
-    rubro = db.Column(
-        db.String(255), nullable=False
+    rubro_id = db.Column(
+        db.Integer,
+        db.ForeignKey('Rubro.id'),
+        nullable=False
     )
+    #1:
     fecha_ingreso = db.Column(
         db.Date, nullable=False
     )
@@ -61,6 +63,7 @@ class Sanitario(db.Model):
 
     granja = db.relationship('Granja', backref="Sanitario")
     especie = db.relationship('Especie', backref="Sanitario")
+    rubro = db.relationship('Rubro', backref="Sanitario")
 
 
     def __repr__(self):
@@ -73,7 +76,8 @@ class SanitarioSchema(ma.SQLAlchemyAutoSchema):
         sqla_session = db.session 
     granja = fields.Nested('GranjaSchema')
     especie = fields.Nested('EspecieSchema')
-
+    rubro = fields.Nested('RubroSchema')
+     
 
 class SimpleSanitarioSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -86,9 +90,9 @@ class SimpleSanitarioSchema(ma.SQLAlchemyAutoSchema):
     # # Relación con animales
     # animales = fields.List(fields.Integer(), required=True)
 
-class RubroSanitarioSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Sanitario
-        include_fk = True
-        fields = ('rubro',)
+# class RubroSanitarioSchema(ma.SQLAlchemyAutoSchema):
+#     class Meta:
+#         model = Sanitario
+#         include_fk = True
+#         fields = ('rubro',)
 

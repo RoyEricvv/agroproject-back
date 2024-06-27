@@ -2,7 +2,7 @@ from flask import request, make_response, abort, jsonify
 from datetime import datetime as dt
 from flask import current_app as app
 from aplicacion import db
-from aplicacion.modelo.Sanitario import Sanitario, SanitarioSchema, SimpleSanitarioSchema, RubroSanitarioSchema
+from aplicacion.modelo.Sanitario import Sanitario, SanitarioSchema, SimpleSanitarioSchema
 from aplicacion.modelo.Granja import Granja
 from aplicacion.modelo.Especie import Especie
 from marshmallow import ValidationError
@@ -12,7 +12,6 @@ sanitario_schema = SanitarioSchema()
 sanitarios_schema = SanitarioSchema(many=True)
 simple_sanitario_schema = SimpleSanitarioSchema()
 simple_sanitarios_schema = SimpleSanitarioSchema(many=True)
-rubro_sanitario_schema = RubroSanitarioSchema(many=True)
 
 
 # Crear un nuevo sanitario
@@ -84,34 +83,34 @@ def sanitario_obtener_por_id(sanitario_id):
         return jsonify({"Mensaje": "No se encontró el sanitario", "sanitarioId": sanitario_id}), 404
 
 
-@app.route('/sanitarios/rubro', methods=['GET'])
-def obtener_rubro_sanitario():
-    try:
-        estado_sanitario = request.args.get('estado_sanitario')
+# @app.route('/sanitarios/rubro', methods=['GET'])
+# def obtener_rubro_sanitario():
+#     try:
+#         estado_sanitario = request.args.get('estado_sanitario')
 
-        # Consultar todos los sanitarios
-        sanitarios_query = Sanitario.query
+#         # Consultar todos los sanitarios
+#         sanitarios_query = Sanitario.query
 
-        # Filtrar por estado_sanitario si está presente en los argumentos de la solicitud
-        if estado_sanitario:
-            sanitarios_query = sanitarios_query.filter_by(estado_sanitario=estado_sanitario)
+#         # Filtrar por estado_sanitario si está presente en los argumentos de la solicitud
+#         if estado_sanitario:
+#             sanitarios_query = sanitarios_query.filter_by(estado_sanitario=estado_sanitario)
 
-        # Ejecutar la consulta y obtener los resultados
-        sanitarios = sanitarios_query.all()
+#         # Ejecutar la consulta y obtener los resultados
+#         sanitarios = sanitarios_query.all()
 
-        # Verificar si se encontraron sanitarios
-        if not sanitarios:
-            return jsonify({"Mensaje": "No se encontraron sanitarios"}), 404
+#         # Verificar si se encontraron sanitarios
+#         if not sanitarios:
+#             return jsonify({"Mensaje": "No se encontraron sanitarios"}), 404
 
-        # Serializar los resultados usando simple_sanitario_schema
-        result = rubro_sanitario_schema.dump(sanitarios)
+#         # Serializar los resultados usando simple_sanitario_schema
+#         result = rubro_sanitario_schema.dump(sanitarios)
 
-        # Devolver la respuesta JSON
-        return jsonify(result)
+#         # Devolver la respuesta JSON
+#         return jsonify(result)
 
-    except Exception as e:
-        # Manejar cualquier error y devolver una respuesta de error
-        return jsonify({"Mensaje": "Error al obtener rubro de Sanitario", "Error": str(e)}), 500
+#     except Exception as e:
+#         # Manejar cualquier error y devolver una respuesta de error
+#         return jsonify({"Mensaje": "Error al obtener rubro de Sanitario", "Error": str(e)}), 500
 
 
 # Actualizar un sanitario por su ID

@@ -21,6 +21,6 @@ def init_app():
 
 
     with app.app_context():
-        from aplicacion.routes import nutrienteRacionRoute, reporteRoute,profileRoute, aditivoRoute,fuenteRoute, restriccionRoute, etapaVidaRoute, departamentoRoute, historialCrecimientoRoute, animalesRoute, contenidoNutricionalRoute, contenidoRacionRouter, especieRoute, granjaRoute, insumoRoute, inventarioRoute, nutrienteRouter, racionFormuladaRoute, requerimientoNutricionalRoute, usuarioRoute, metodoFormularRacion, materiaSecaRoute, sanitarioRoute, consumoSanitarioRoute, equiposRoute, ingresoxEgresoRoute, route  # Import routes      
+        from aplicacion.routes import nutrienteRacionRoute, reporteRoute,profileRoute, aditivoRoute,fuenteRoute, restriccionRoute, etapaVidaRoute, departamentoRoute, historialCrecimientoRoute, animalesRoute, contenidoNutricionalRoute, contenidoRacionRouter, especieRoute, granjaRoute, insumoRoute, inventarioRoute, nutrienteRouter, racionFormuladaRoute, requerimientoNutricionalRoute, usuarioRoute, metodoFormularRacion, materiaSecaRoute, sanitarioRoute, consumoSanitarioRoute, equiposRoute, ingresoxEgresoRoute, rubroRoute, route  # Import routes      
         db.create_all()  # Create sql tables for our data models
         return app  

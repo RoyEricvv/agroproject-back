@@ -75,3 +75,10 @@ class AnimalSchema(ma.SQLAlchemyAutoSchema):
         sqla_session = db.session 
     granja = fields.Nested('GranjaSchema')
     especie = fields.Nested('EspecieSchema')
+
+
+class SimpleAnimalSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Animal
+        include_fk = True
+        sqla_session = db.session
