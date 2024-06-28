@@ -59,13 +59,11 @@ class ConsumoSanitario(db.Model):
         return '<ConsumoSanitario {}>'.format(self.nombre)
 
 
-
-
-
 class ConsumoVacunaSchema(ma.Schema):
     vacuna_id = fields.Int()
     numero_dosis = fields.Int()
-    vacunas = fields.Nested('SimpleSanitarioSchema', many=True)
+    # vacunas = fields.Nested('SimpleSanitarioSchema', many=True)
+
 
 class IntermediateConsumoSanitarioSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -75,15 +73,8 @@ class IntermediateConsumoSanitarioSchema(ma.SQLAlchemyAutoSchema):
     consumo_vacunas = fields.Method("get_vacunas")
     animales = fields.List(fields.Nested('SimpleAnimalSchema'))
     granja = fields.Nested('GranjaSchema')
-
+    vacunas = fields.List(fields.Nested(SimpleSanitarioSchema))
     def get_vacunas(self, obj):
-        # results = db.session.query(consumo_vacuna, Sanitario) \
-        #             .outerjoin(Sanitario, Sanitario.id == consumo_vacuna.c.vacuna_id) \
-        #             .filter(consumo_vacuna.c.consumo_id == obj.id) \
-        #             .all()
-        # results = Sanitario.query.join(consumo_vacuna).filter(consumo_vacuna.consumo_id == obj.id).all()
-        # results = db.session.query(consumo_vacuna).join(Sanitario, Sanitario.id == consumo_vacuna.vacuna_id)
-
         results = db.session.query(consumo_vacuna) \
                     .filter(consumo_vacuna.c.consumo_id == obj.id) \
                     .all()
